@@ -431,4 +431,102 @@ List 中所有大於 10 的奇數變為 "BANG"，小於 10 的奇數變為 "BOOM
 
 只取大於`50`的結果
 
+	ghci> [ x*y | x <- [2,5,10], y <- [8,10,11], x*y > 50]
+	[55,80,100,110]
+
+### Self defination ###
+
+	let length xs = sum [1 | _ <- xs]
+
+Code:
+
+	ghci> length "Hello"
+	5
+	ghci> length ""
+	0
+
+Explain:
+
+`_` 匿名，表示不關心值是多少，與其用一個永遠不用的變數，不如用一個`_`
+
+`1` 表示你不在乎值是多少，都為1 
+
+### 自訂 除去字串中所有非大寫字母的函數 ###
+
+	removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']]
+
+Example 
+
+	ghci> removeNonUppercase "Hahaha! Ahahaha!"
+	"HA"
+	ghci> removeNonUppercase "IdontLIKEFROGS"
+	"ILIKEFROGS"
+
+**有個包含許多數值的 List 的 List，讓我們在不拆開它的前提下除去其中的所有奇數**
+
+	ghci> let xxs = [[1,3,5,2,3,1,2,4,5],[1,2,3,4,5,6,7,8,9],[1,2,4,2,1,6,3,1,3,2,3,6]]
+	ghci> [ [ x | x <- xs, even x ] | xs <- xxs]
+	[[2,2,4],[2,4,6,8],[2,4,2,6,2,6]]
+
+##Tuple
+
+Tuple (元組)很像 List --都是將多個值存入一個個體的容器。
+
+但它們卻有着本質的不同，一組數字的 List 就是一組數字，它們的型別相同，且不關心其中包含元素的數量。
+
+而 Tuple 則要求你對需要組合的數據的數目非常的明確，它的型別取決於其中項的數目與其各自的型別。
+
+Tuple 中的項由括號括起，並由逗號隔開。
+
+**另外的不同之處就是 Tuple 中的項不必為同一型別**，在 Tuple 裡可以存入多型別項的組合。
+
+`fst` 回傳tuple的首項
+
+	ghci> fst (8,11)
+	8
+	ghci> fst ("Wow", False)
+	"Wow"
+
+`snd` 回傳tuple的尾項
+
+	ghci> snd (8,11)
+	11
+	ghci> snd ("Wow", False)
+	False
+
+>> *Note*：這兩個函數僅對序對有效，而不能應用於三元組，四元組和五元組之上。稍後，我們將過一遍從 Tuple 中取數據的所有方式。
+
+`zip` 用來生成一組序對 (Pair) 的 List。它取兩個 List，然後將它們交叉配對，形成一組序對的 List
+
+### 你需要組合或是遍歷兩個 List ###
 	
+	ghci> zip [1,2,3,4,5] [5,5,5,5,5]
+	[(1,5),(2,5),(3,5),(4,5),(5,5)]
+	ghci> zip [1 .. 5] ["one", "two", "three", "four", "five"]
+	[(1,"one"),(2,"two"),(3,"three"),(4,"four"),(5,"five")]
+
+不同類型
+	
+	ghci> zip [5,3,2,6,2,7,2,5,4,6,6] ["im","a","turtle"]
+	[(5,"im"),(3,"a"),(2,"turtle")]
+
+無限
+
+	ghci> zip [1..] ["apple", "orange", "cherry", "mango"]
+	[(1,"apple"),(2,"orange"),(3,"cherry"),(4,"mango")]
+
+如何取得所有三邊長度皆為整數且小於等於 10，周長為 24 的直角三角形？
+
+首先，把所有三遍長度小於等於 10 的三角形都列出來：
+
+	ghci> let triangles = [ (a,b,c) | c <- [1..10], b <- [1..10], a <- [1..10] ]
+
+剛才我們是從三個 List 中取值，並且通過輸出函數將其組合為一個三元組。只要在 ghci 下邊呼叫 triangle，你就會得到所有三邊都小於等於 10 的三角形。我們接下來給它添加一個限制條件，令其必須為直角三角形。同時也考慮上 b 邊要短於斜邊，a 邊要短於 b 邊情況
+
+	ghci> let rightTriangles = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
+
+最後修改函數，告訴它只要周長為 24 的三角形。
+
+	ghci> let rightTriangles' = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2, a+b+c == 24]
+	ghci> rightTriangles'
+	[(6,8,10)]
