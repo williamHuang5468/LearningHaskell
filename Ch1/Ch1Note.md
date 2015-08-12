@@ -264,3 +264,171 @@ explain
 
 	ghci> head []  
 	*** Exception: Prelude.head: empty list
+
+``length`` 取長度
+
+	ghci> length [5,4,3,2,1]  
+	5
+
+``null`` 檢查是否為空
+	
+	ghci> null [1,2,3]  
+	False  
+	ghci> null []  
+	True
+
+``reverse`` 反轉List
+
+	ghci> reverse [5,4,3,2,1]  
+	[1,2,3,4,5]
+
+``take`` 回傳List的前幾個元素
+
+	ghci> take 3 [5,4,3,2,1]  
+	[5,4,3]  
+	ghci> take 1 [3,9,3]  
+	[3]  
+	ghci> take 5 [1,2]  
+	[1,2]  
+	ghci> take 0 [6,6,6] 
+	[]
+
+**若是圖取超過 List 長度的元素個數，只能得到原 List。**
+``take`` 0 個元素，則會得到一個空 List！
+
+``drop`` 和take相反，刪除List前幾個元素
+
+	ghci> drop 3 [8,4,2,1,5,6]  
+	[1,5,6]  
+	ghci> drop 0 [1,2,3,4]  
+	[1,2,3,4]  
+	ghci> drop 100 [1,2,3,4]  
+	[]
+
+`maximum` 回傳List中最大的元素 ; `minimum `回傳最小
+
+``sum`` 回傳List中值的總和 ; `product`回傳List中所有元素的積
+
+	ghci> sum [5,2,1,6,3,2,5,7]  
+	31  
+	ghci> product [6,2,1,2]  
+	24  
+	ghci> product [1,2,5,6,7,9,2,0]  
+	0
+
+`elem` 判斷元素是否在List中，長以中綴方式出現
+
+	ghci> 4 `elem` [3,4,5,6]  
+	True  
+	ghci> 10 `elem` [3,4,5,6]  
+	False
+
+## 使用Range ##
+
+取得1~20值的List，使用Range
+
+	[1..20]
+
+Example:
+
+	ghci> [1..20]
+	[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+	ghci> ['a'..'z']
+	"abcdefghijklmnopqrstuvwxyz"
+	ghci> ['K'..'Z']  
+	"KLMNOPQRSTUVWXYZ"
+
+每次跨多一點值
+
+	ghci> [2,4..20]
+	[2,4,6,8,10,12,14,16,18,20]
+	ghci> [3,6..20]
+	[3,6,9,12,15,18]
+
+憑藉前兩項判斷步數
+
+要得到 20 到 1 的 List，[20..1] 是不可以的。
+
+必須得 ``[20,19..1]``。 
+
+**在 Range 中使用浮點數要格外小心！出於定義的原因，浮點數並不精確。若是使用浮點數的話，你就會得到如下的糟糕結果**
+
+	ghci> [0.1, 0.3 .. 1]
+	[0.1,0.3,0.5,0.7,0.8999999999999999,1.0999999999999999]
+
+**避免在 Range 中使用浮點數。**
+
+你也可以不標明 Range 的上限
+
+取前 24 個 13 的倍數該怎樣？恩，你完全可以 [13,26..24*13]，但有更好的方法： 
+
+	take 24 [13,26..]
+
+`cycle` 生成無限 List，接受一個 List 做參數並返回一個無限 List
+
+	ghci> take 10 (cycle [1,2,3])
+	[1,2,3,1,2,3,1,2,3,1]
+	ghci> take 12 (cycle "LOL ")
+	"LOL LOL LOL "
+
+`repeat` 接受一個值作參數，並返回一個僅包含該值的無限 List。
+
+	ghci> take 10 (repeat 5)
+	[5,5,5,5,5,5,5,5,5,5]
+
+`replicate` 取得相同元素的List
+
+	ghci> replicate 3 10
+	[10,10,10] 
+
+## List Comprehension ##
+
+	ghci> [x*2 | x <- [1..10]]
+	[2,4,6,8,10,12,14,16,18,20]
+
+給這個 comprehension 再添個限制條件(predicate)
+
+	要求只取乘以 2 後大於等於 12 的元素。
+
+Code 
+
+	ghci> [x*2 | x <- [1..10], x*2 >= 12]
+	[12,14,16,18,20]
+
+	[Result | x <- Range, Condiction]
+
+取 50 到 100 間所有除7的餘數為 3 的元素
+
+	ghci> [ x | x <- [50..100], x `mod` 7 == 3]
+	[52,59,66,73,80,87,94]
+
+### filter ###
+
+從一個 List 中篩選出符合特定限制條件的操作
+
+List 中所有大於 10 的奇數變為 "BANG"，小於 10 的奇數變為 "BOOM"，其他則統統扔掉。方便重用起見，我們將這個 comprehension 置於一個函數之中。
+
+	boomBangs xs = [ if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
+
+	ghci> boomBangs [7..13]
+	["BOOM!","BOOM!","BANG!","BANG!"]
+
+**加多個限制條件。若要達到 10 到 20 間所有不等於 13，15 或 19 的數**
+
+	ghci> [ x | x <- [10..20], x /= 13, x /= 15, x /= 19]
+	[10,11,12,14,16,17,18,20]
+
+多個 List 中取元素
+
+在不過濾的前提 下，取自兩個長度為 4 的集合的 comprehension 會產生一個長度為 16 的 List。假設有兩個 List，`[2,5,10]` 和 `[8,10,11]`， 要取它們所有組合的積
+
+	ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]
+	[16,20,22,40,50,55,80,100,110]
+
+概念
+
+	x*y | x = [] , y = []
+
+只取大於`50`的結果
+
+	
