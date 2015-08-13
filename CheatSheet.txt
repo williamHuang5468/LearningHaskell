@@ -1,0 +1,119 @@
+if statement
+
+function arg = if condiction
+				then arg
+				else arg/2
+
+List
+
+++ 合併兩陣列
+:: 連接單元素
+!! 取得索引元素
+
+head return first element.
+tail return tail element.
+last return final element.
+init return element except final.
+length return length.
+null IsNull.
+reverse 回傳反轉的List
+take 回傳 前幾個元素
+drop 回傳 刪除前幾元素後的List
+maximum 最大值
+minimum 最小值
+sum 總合
+product 總積
+elem 元素存在否，[中綴]
+
+Range    [1..20]
+Range has step    [2,4..20]
+cycle 產生無限的List，接受List為參數，回傳一個無限的List
+repeat 一個值為參數，回傳該值的無限List
+replicate 取得相同元素的List
+
+List Comprehension
+
+[x*2 | x <- [1..10]]
+[result | arg value range, condiction]
+
+filter
+List 中所有大於 10 的奇數變為 "BANG"，小於 10 的奇數變為 "BOOM"
+boomBangs xs = [ if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
+result = if x < 10 then "BOOM!" else "BANG!"
+arg value range = x <- xs
+condiction = odd x
+
+10 到 20 間所有不等於 13，15 或 19 的數
+[x | x <- [10..20], x/=13, x/=15, x/=19]
+
+[2,5,10] 和 [8,10,11]，要取它們所有組合的積
+[x*y | x <- [2,5,10], y <- [8,10,11]]
+
+let length xs = sum [ 1| _ <- xs ]
+
+除去字串中所有非大寫字母的函數
+
+removeUppercase xs = [x | x <- xs, x `elem` ['A'..'Z']]
+
+Tuple每項由括號括起，並由逗號隔開。
+fst (8,11)，回傳首項
+snd (8,11)，回傳尾項
+zip 產生一組成對的List。(參數為兩個List)
+
+Ch4
+
+實作head
+head :: [a] -> a
+head (x:_) = x
+
+length
+length :: [a] ->a
+length (_:xs) = 1 + length xs
+
+sum
+sum :: [a] -> a
+sum (x:xs) = x + sum xs
+
+as pattern
+xs@(x:y:ys), reuse xs to replace 'x:y:ys'
+
+Guards
+一個值的某項屬性是否為真。
+
+bmiTell :: (RealFloat a) => a -> String  
+bmiTell bmi  
+    | bmi <= 18.5 = "You're underweight, you emo, you!"  
+    | bmi <= 25.0 = "You're supposedly normal. Pffft, I bet you're ugly!"  
+    | bmi <= 30.0 = "You're fat! Lose some weight, fatty!"  
+    | otherwise   = "You're a whale, congratulations!"
+
+實作Max
+max a b
+	| a > b = a
+	| otherwise = b
+
+實作Compare
+a `myCompare` b
+	| a > b = GT
+	| a == b = EQ
+	| otherwise = LT
+
+Where
+
+取代重複的宣告
+
+bmiTell weight height  
+    | bmi <= 18.5 = "You're underweight, you emo, you!"  
+    | bmi <= 25.0 = "You're supposedly normal. Pffft, I bet you're ugly!"  
+    | bmi <= 30.0 = "You're fat! Lose some weight, fatty!"  
+    | otherwise   = "You're a whale, congratulations!"  
+    where bmi = weight / height ^ 2
+
+將值賦予意義，利用名字取代。
+
+姓名的首字母
+
+initials :: String -> String -> String  
+initials firstname lastname = [f] ++ ". " ++ [l] ++ "."  
+    where (f:_) = firstname  
+          (l:_) = lastname
