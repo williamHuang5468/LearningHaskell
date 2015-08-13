@@ -1,4 +1,4 @@
-# Learning Haskell Ch1 - Introduction #
+# Learning Haskell Ch2 - Introduction #
 
 Open the command line
 
@@ -147,13 +147,17 @@ The number can be compute.
 
 	doubleSmallNumber' x = (if x > 100 then x else x*2) + 1
 
+解釋
+
+>> 函式 參數(x)，如果 X 大於 一百，回傳X，否則回傳兩倍的X
+
 沒有參數的函式，固定回傳值
 
 	conanO'Brien = "It's a-me, Conan O'Brien!"
 
 **Notice**
 
-	開頭大寫是不允許的
+	開頭大寫是不允許的，內建型別是用大寫開頭做辨別，如果自己也用會搞混。
 
 ## List入門 ##
 
