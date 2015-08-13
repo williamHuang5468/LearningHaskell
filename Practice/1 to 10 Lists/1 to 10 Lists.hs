@@ -61,9 +61,16 @@ myLength (x:xs) = 1 + myLength xs
 	[4,3,2,1]
 -}
 
+myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse [a] = [a]
+myReverse (x:xs) = myReverse xs++[x]
+
 --  Problem 6
 {-|
-	(*) Find out whether a list is a palindrome. A palindrome can be read forward or backward; e.g. (x a m a x).
+	(*) Find out whether a list is a palindrome. 
+		A palindrome can be read forward or backward; 
+		e.g. (x a m a x).
 	*Main> isPalindrome [1,2,3]
 	False
 	*Main> isPalindrome "madamimadam"
@@ -71,6 +78,13 @@ myLength (x:xs) = 1 + myLength xs
 	*Main> isPalindrome [1,2,4,8,16,8,4,2,1]
 	True
 -}
+
+isPalindrome::(Eq a) => [a] -> Bool
+isPalindrome [] = False
+isPalindrome [a] = False
+isPalindrome x = if x == (myReverse x)
+					then True 
+					else False
 
 --  Problem 7
 {-|
@@ -88,6 +102,9 @@ myLength (x:xs) = 1 + myLength xs
 	*Main> flatten (List [])
 	[]
 -}
+
+--flatten :: (Int a) => [a] -> [a]
+--flatten (List []) = []
 
 --  Problem 8
 {-|
